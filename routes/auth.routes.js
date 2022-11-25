@@ -25,23 +25,17 @@ router.get('/verify', isAuthenticated, (req, res, next) => {
 // POST /auth/signup  - Creates a new user in the database
 router.post('/signup', (req, res) => {
   const { username, email, password } = req.body;
-
-  // Check if email or password or name are provided as empty strings
   if (email === '' || password === '' || username === '') {
     res.status(400).json({
       message: 'All fields are mandatory. Please provide your username, email and password.',
     });
     return;
   }
-
-  // This regular expression check that the email is of a valid format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
     res.status(400).json({ message: 'Provide a valid email address.' });
     return;
   }
-
-  // This regular expression checks password for special characters and minimum length
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
     res.status(400).json({
@@ -77,8 +71,6 @@ router.post('/signup', (req, res) => {
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post('/login', (req, res, next) => {
   const { email, password } = req.body;
-
-  // Check if email or password are provided as empty string
   if (email === '' || password === '') {
     res
       .status(400)
@@ -86,23 +78,13 @@ router.post('/login', (req, res, next) => {
     return;
   }
 
-  if (!passwordRegex.test(password)) {
-    return res.status(400).json({
-      message:
-        'Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.',
-    });
-  }
-
-  // Check the users collection if a user with the same email exists
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        // If the user is not found, send an error response
         res.status(400).json({ message: 'Wrong credentials.' });
         return;
       }
 
-      // Compare the provided password with the one saved in the database
       const passwordCorrect = bcrypt
         .compare(password, user.password)
         .then((isSamePassword) => {
@@ -123,6 +105,19 @@ router.post('/login', (req, res, next) => {
         .catch((err) => next(err));
     })
     .catch((err) => next(err));
+});
+
+//Delete user
+router.delete('/delete-profile/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    await User.findByIdAndRemove(id);
+
+    res.status(200).json(`The user with id: ${id} was sucessfully deleted`);
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

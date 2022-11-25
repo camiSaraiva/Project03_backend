@@ -1,18 +1,18 @@
 const { Schema, model } = require('mongoose');
 
-const roomSchema = new Schema(
+const eventSchema = new Schema(
   {
     title: { type: String, required: true },
-    id: { type: String, required: true, unique: true },
     description: { type: String },
-    playlistCode: { type: String, required: true, unique: true },
+    eventCode: { type: String, required: true },
     collaborators: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    playlists: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
   },
   {
     timestamps: true,
   }
 );
 
-const Room = model('Room', userSchema);
+const Event = model('Event', eventSchema);
 
-module.exports = Room;
+module.exports = Event;

@@ -21,6 +21,7 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    profilePic: { type: String },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

@@ -21,13 +21,16 @@ const indexRoutes = require('./routes/index.routes');
 app.use('/api', indexRoutes);
 
 const authRoutes = require('./routes/auth.routes');
-app.use('/api', authRoutes);
-
-const playlistRoutes = require('./routes/playlist.routes');
-app.use('/api', isAuthenticated, playlistRoutes);
+app.use('/auth', authRoutes);
 
 const userRoutes = require('./routes/user.routes');
 app.use('/api', userRoutes);
+
+const eventRoutes = require('./routes/event.routes');
+app.use('/api', isAuthenticated, eventRoutes);
+
+const playlistRoutes = require('./routes/playlist.routes');
+app.use('/api', isAuthenticated, playlistRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
