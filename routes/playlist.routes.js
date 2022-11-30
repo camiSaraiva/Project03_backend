@@ -2,17 +2,21 @@ const router = require('express').Router();
 const Playlist = require('../models/Playlist.model');
 const express = require('express');
 const fileUploader = require('../config/cloudinary.config');
+const Event = require('../models/Event.model');
+const User = require('../models/User.model');
 
 //Create playlist
 router.post('/playlist', async (req, res, next) => {
   try {
     const { title, playlistImg, collaborators, rate } = req.body;
+    const userId = req.payload.id;
     const newPlaylist = await Playlist.create({
       title,
       playlistImg,
       collaborators,
       rate,
     });
+    await Event.findByIdAndUpdate(newEvent._id, { $push: { collaborators: userId } });
     res.status(201).json(newPlaylist);
   } catch (error) {
     res.json(error);

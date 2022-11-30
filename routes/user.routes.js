@@ -7,15 +7,14 @@ const fileUploader = require('../config/cloudinary.config');
 router.get('/profile/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
-
+    const user = await User.findById(id).populate('events');
     res.status(200).json(user);
   } catch (error) {
     next(error);
   }
 });
 
-router.put('/profile', isAuthenticated, async (req, res, next) => {
+router.put('/profile/:id/edit', isAuthenticated, async (req, res, next) => {
   try {
     const id = req.payload._id;
     const { username, email, profilePic } = req.body;
@@ -52,7 +51,7 @@ router.delete('/profile', isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.post('/upload', fileUploader.single('profilePic'), (req, res, next) => {
+router.post('/upload', fileUploader.single('image'), (req, res, next) => {
   if (!req.file) {
     next(new Error('No file uploaded!'));
     return;

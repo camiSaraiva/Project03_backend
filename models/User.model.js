@@ -21,7 +21,12 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    profilePic: { type: String },
+    profilePic: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/dophags38/image/upload/v1669839649/app-gallery/g0kr1vfxpmywvink7uk6.jpg',
+    },
+    events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`

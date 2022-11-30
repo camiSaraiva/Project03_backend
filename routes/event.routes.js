@@ -1,19 +1,21 @@
 const router = require('express').Router();
 const Event = require('../models/Event.model');
 const fileUploader = require('../config/cloudinary.config');
+const User = require('../models/User.model');
 
 //Create event
 router.post('/event', async (req, res, next) => {
   try {
     const { title, description, eventCode, eventPic } = req.body;
-
+    const userId = req.payload.id;
     const newEvent = await Event.create({
       title,
       description,
       eventCode,
       eventPic,
     });
-
+    await User.findByIdAndUpdate(userId, { $push: { events: newEvent._id } });
+    await Event.findByIdAndUpdate(newEvent._id, { $push: { collaborators: userId } });
     res.status(201).json(newEvent);
   } catch (error) {
     res.json(error);
