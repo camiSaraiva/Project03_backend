@@ -3,11 +3,11 @@ const { Schema, model } = require('mongoose');
 const playlistSchema = new Schema(
   {
     title: { type: String, required: true },
-    description: {type: String},
-    img: { type: String },
+    description: { type: String },
+    playlistImg: { type: String },
     collaborators: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    rate: [],
-    tracks: [],
+    rate: [String],
+    tracks: [String],
   },
   {
     timestamps: true,

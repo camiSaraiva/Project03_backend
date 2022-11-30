@@ -1,15 +1,17 @@
 const router = require('express').Router();
 const Event = require('../models/Event.model');
+const fileUploader = require('../config/cloudinary.config');
 
 //Create event
 router.post('/event', async (req, res, next) => {
   try {
-    const { title, description, eventCode } = req.body;
+    const { title, description, eventCode, eventPic } = req.body;
 
     const newEvent = await Event.create({
       title,
       description,
       eventCode,
+      eventPic,
     });
 
     res.status(201).json(newEvent);
@@ -44,13 +46,22 @@ router.get('/event/:id', async (req, res, next) => {
 router.put('/event/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, eventCode, collaborators } = req.body;
+    const { title, description, eventCode, collaborators, eventPic } = req.body;
+
+    let eventPictureURL;
+
+    if (req.file) {
+      eventPictureURL = req.file.path;
+    } else {
+      eventPictureURL = eventPic;
+    }
 
     const updatedEvent = await Event.findByIdAndUpdate(id, {
       title,
       description,
       eventCode,
       collaborators,
+      eventPic,
     });
 
     res.status(200).json(updatedEvent);
@@ -75,6 +86,16 @@ router.put('/event/:eventId/add/:playlistId', async (req, res, next) => {
     res.json(error);
     next(error);
   }
+});
+
+//Add event image
+router.post('/event/:id/upload', fileUploader.single('eventPic'), (req, res, next) => {
+  if (!req.file) {
+    next(new Error('No file uploaded!'));
+    return;
+  }
+
+  res.json({ fileUrl: req.file.path });
 });
 
 //Update event by deleting playlist

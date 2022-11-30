@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User.model');
 const { isAuthenticated } = require('../middleware/jwt.middleware');
+const fileUploader = require('../config/cloudinary.config');
 
 router.get('/profile/:id', async (req, res, next) => {
   try {
@@ -49,6 +50,15 @@ router.delete('/profile', isAuthenticated, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+router.post('/upload', fileUploader.single('profilePic'), (req, res, next) => {
+  if (!req.file) {
+    next(new Error('No file uploaded!'));
+    return;
+  }
+
+  res.json({ fileUrl: req.file.path });
 });
 
 module.exports = router;

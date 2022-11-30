@@ -7,6 +7,7 @@ const eventSchema = new Schema(
     eventCode: { type: String, required: true },
     collaborators: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     playlists: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
+    eventPic: { type: String },
   },
   {
     timestamps: true,

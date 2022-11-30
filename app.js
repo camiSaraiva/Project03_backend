@@ -10,6 +10,9 @@ require('./db');
 const express = require('express');
 
 const app = express();
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require('./config')(app);
@@ -21,7 +24,7 @@ const indexRoutes = require('./routes/index.routes');
 app.use('/api', indexRoutes);
 
 const authRoutes = require('./routes/auth.routes');
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
 
 const userRoutes = require('./routes/user.routes');
 app.use('/api', userRoutes);
