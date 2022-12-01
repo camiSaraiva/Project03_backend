@@ -19,16 +19,16 @@ router.put('/profile/edit/:id', isAuthenticated, async (req, res, next) => {
     const id = req.payload._id;
     const { username, email, image } = req.body;
 
-    let profilePictureURL;
+    let userUpdateAgain;
 
     if (req.file) {
-      const userUpdateAgain = await User.findByIdAndUpdate(
+      userUpdateAgain = await User.findByIdAndUpdate(
         id,
         { username, email, profilePictureURL: image },
         { new: true }
       );
     } else {
-      const userUpdateAgain = await User.findByIdAndUpdate(id, { username, email }, { new: true });
+      userUpdateAgain = await User.findByIdAndUpdate(id, { username, email }, { new: true });
     }
 
     res.status(200).json(userUpdateAgain);
