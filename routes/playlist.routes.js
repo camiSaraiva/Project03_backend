@@ -16,7 +16,7 @@ router.post('/playlist', async (req, res, next) => {
       collaborators,
       rate,
     });
-    await Event.findByIdAndUpdate(newEvent._id, { $push: { collaborators: userId } });
+    /*     await Event.findByIdAndUpdate(newEvent._id, { $push: { collaborators: userId } }); */
     res.status(201).json(newPlaylist);
   } catch (error) {
     res.json(error);

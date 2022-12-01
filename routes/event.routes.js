@@ -38,6 +38,7 @@ router.get('/event/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const singleEvent = await Event.findById(id).populate('playlists');
+    console.log(singleEvent);
     res.status(200).json(singleEvent);
   } catch (error) {
     next(error);
@@ -48,23 +49,21 @@ router.get('/event/:id', async (req, res, next) => {
 router.put('/event/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description, eventCode, collaborators, eventPic } = req.body;
+    const { title, description, eventPic } = req.body;
 
-    let eventPictureURL;
-
+    let updatedEvent;
     if (req.file) {
-      eventPictureURL = req.file.path;
+      updatedEvent = await Event.findByIdAndUpdate(id, {
+        title,
+        description,
+        eventPic,
+      });
     } else {
-      eventPictureURL = eventPic;
+      updatedEvent = await Event.findByIdAndUpdate(id, {
+        title,
+        description,
+      });
     }
-
-    const updatedEvent = await Event.findByIdAndUpdate(id, {
-      title,
-      description,
-      eventCode,
-      collaborators,
-      eventPic,
-    });
 
     res.status(200).json(updatedEvent);
   } catch (error) {
@@ -127,6 +126,52 @@ router.delete('/event/:id', async (req, res, next) => {
 
     res.status(200).json(`The event with id: ${id} was sucessfully deleted`);
   } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/addSong/:eventId', async (req, res, next) => {
+  try {
+    //id from params refers to the playlist
+    const { eventId } = req.params;
+    const { image, artist, track } = req.body;
+
+    console.log({ image, artist, track });
+
+    const updatedByEvent = await Event.findByIdAndUpdate(
+      eventId,
+      { $push: { playlists: { image, artist, track } } },
+      { new: true }
+    );
+    console.log(updatedByEvent);
+    res.status(200).json(updatedByEvent);
+  } catch (error) {
+    res.json(error);
+    next(error);
+  }
+});
+
+router.put('/removeSong/:eventId', async (req, res, next) => {
+  try {
+    //id from params refers to the playlist
+    const { eventId } = req.params;
+    const { track } = req.body;
+
+    const thisEvent = await Event.findById(eventId);
+
+    const updatedPlaylist = thisEvent.playlists.filter((song) => {
+      return song.track != track;
+    });
+
+    console.log('este', updatedPlaylist);
+    console.log('-------->', track);
+
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, { playlists: updatedPlaylist });
+
+    console.log(thisEvent);
+    res.status(200).json(thisEvent);
+  } catch (error) {
+    res.json(error);
     next(error);
   }
 });

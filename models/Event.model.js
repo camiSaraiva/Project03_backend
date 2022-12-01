@@ -6,7 +6,7 @@ const eventSchema = new Schema(
     description: { type: String },
     eventCode: { type: String, required: true },
     collaborators: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    playlists: [{ type: Schema.Types.ObjectId, ref: 'Playlist' }],
+    playlists: [{}],
     eventPic: { type: String, default: '' },
   },
   {
