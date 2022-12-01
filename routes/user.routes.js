@@ -14,7 +14,7 @@ router.get('/profile/:id', async (req, res, next) => {
   }
 });
 
-router.put('/profile/:id/edit', isAuthenticated, async (req, res, next) => {
+router.put('/profile/edit/:id', isAuthenticated, async (req, res, next) => {
   try {
     const id = req.payload._id;
     const { username, email, profilePic } = req.body;
