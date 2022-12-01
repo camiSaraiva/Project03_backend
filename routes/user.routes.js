@@ -17,21 +17,20 @@ router.get('/profile/:id', async (req, res, next) => {
 router.put('/profile/edit/:id', isAuthenticated, async (req, res, next) => {
   try {
     const id = req.payload._id;
-    const { username, email, profilePic } = req.body;
+    const { username, email, image } = req.body;
 
     let profilePictureURL;
 
     if (req.file) {
-      profilePictureURL = req.file.path;
+      const userUpdateAgain = await User.findByIdAndUpdate(
+        id,
+        { username, email, profilePictureURL: image },
+        { new: true }
+      );
     } else {
-      profilePictureURL = profilePic;
+      const userUpdateAgain = await User.findByIdAndUpdate(id, { username, email }, { new: true });
     }
 
-    const userUpdateAgain = await User.findByIdAndUpdate(
-      id,
-      { username, email, profilePictureURL },
-      { new: true }
-    );
     res.status(200).json(userUpdateAgain);
   } catch (error) {
     console.log(error);
